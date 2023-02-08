@@ -80,3 +80,29 @@ struct FlightNode* findFlight(FlightNode* head, char* destination, char* date)
 	//returns null otherwise
 	return NULL;
 }
+
+
+
+
+
+/*
+* FUNCTION		: void deleteNode()
+*
+* DESCRIPTION	: It deletes a node, using three parameters. The key to this 
+*				  function is relinking pointers around the node before deleting.
+*
+* PARAMETERS	: FlightNode* node  : node to delete
+*				  FlightNode **head : pointer to head of list
+*				  FlightNode **tail : pointer to tail of list
+*
+* RETURNS		: returns nothing	: The assumption is that the node is valid
+*/
+
+void deleteNode(FlightNode* node, FlightNode** head, FlightNode** tail)
+{
+	//If node is NULL, it returns immediately.
+	if (node == NULL)
+	{
+		return deleteNode;
+	}
+}
