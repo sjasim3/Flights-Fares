@@ -1,9 +1,10 @@
 /*
-* Filename:		m1.cpp
-* Project:      Major Assignment 1
-* Programmer:	Sarah Jasim
-* Date:			2023-2-6
-* Description:  This program is meant to keep track of fares for flights and display information about them based on DS focused assignment 2.
+* Filename	  : m1.cpp
+* Project     : DS Major Assignment 1
+* Programmer  : Sarah Jasim
+* Date		  : 2023-2-6
+* Description : This program is meant to keep track of fares for flights and display  
+*               information about them based on DS focused assignment 2.
 */
 
 //Libraries
@@ -25,9 +26,9 @@ struct FlightNode
 {
 	struct FlightNode* head;
 	struct FlightNode* prev;
-	char* destination;
-	char* date;
-	float* flightFare;
+	char* sDestination;
+	char* sDate;
+	float* sFlightFare;
 	struct FlightNode* next;
 	struct FlightNode* tail;
 };
@@ -70,7 +71,7 @@ struct FlightNode* findFlight(FlightNode* head, char* destination, char* date)
 	{
 		//it returns a pointer to the node containing a flight,
 		//if both the destination and date are matched
-		if (strcmp(current->destination, destination) == 0 && strcmp(current->date, date) == 0)
+		if (strcmp(current->sDestination, destination) == 0 && strcmp(current->sDate, date) == 0)
 		{
 			return current;
 		}
@@ -88,21 +89,46 @@ struct FlightNode* findFlight(FlightNode* head, char* destination, char* date)
 /*
 * FUNCTION		: void deleteNode()
 *
-* DESCRIPTION	: It deletes a node, using three parameters. The key to this 
-*				  function is relinking pointers around the node before deleting.
+* DESCRIPTION	: Deletes a node in a linked list of flights, using three parameters. The key to 
+*				  this function is relinking pointers around the node before deleting.
 *
-* PARAMETERS	: FlightNode* node  : node to delete
-*				  FlightNode **head : pointer to head of list
-*				  FlightNode **tail : pointer to tail of list
+* PARAMETERS	: FlightNode* node  : Pointer to the node to be deleted.
+*				  FlightNode **head : Pointer to a pointer to the head of the linked list of flights.
+*				  FlightNode **tail : Pointer to a pointer to the tail of the linked list of flights.
 *
-* RETURNS		: returns nothing	: The assumption is that the node is valid
+* RETURNS		: returns nothing	: The assumption is that the node is valid.
 */
 
 void deleteNode(FlightNode* node, FlightNode** head, FlightNode** tail)
 {
-	//If node is NULL, it returns immediately.
-	if (node == NULL)
+	//If node or *head or *tail is NULL, it returns
+	if (node == NULL || *head == NULL || *tail == NULL)
 	{
-		return deleteNode;
+		return;
 	}
+	
+	//If the node to be deleted is a head and not NULL, the head is updated to point to the next node
+	if (*head == node)
+	{
+		*head = node->next;
+	}
+
+	//If the node to be deleted is a tail, and it is not NULL, the head is updated to point to the previous node
+	if (*tail == node)
+	{
+		*tail = node->prev;
+	}
+	
+	//Deleting the node without breaking the connection
+	if (node->prev != NULL)
+	{
+		node->prev->next = node->next;
+	}
+	if (node->next != NULL) 
+	{
+		node->next->prev = node->prev;
+	}
+
+	//The node is freed to release its memory
+	free(node);
 }
