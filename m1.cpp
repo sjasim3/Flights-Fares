@@ -34,6 +34,14 @@ struct FlightNode
 };
 
 
+//prototypes
+void fillFlightInfo(struct FlightNode** head, char* destination, char* date);
+void printFlightInfo(struct FlightNode* head);
+struct FlightNode* newAllocNode(char* destination, char* date);
+struct FlightNode* findFlight(FlightNode* head, char* destination, char* date);
+void deleteNode(FlightNode* node, FlightNode** head, FlightNode** tail);
+
+
 int main()
 {
 	//Adding a new node in a doubly linked list
