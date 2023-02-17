@@ -44,12 +44,7 @@ void deleteNode(FlightNode* node, FlightNode** head, FlightNode** tail);
 
 
 int main()
-{
-	//Adding a new node in a doubly linked list
-	 
-
-
-
+{	 
 
 	return 0;
 
@@ -61,18 +56,16 @@ int main()
 
 /*
 * Function:			fillFlightInfo()
-* Parameters:		struct FlightNode** head, char* destination, char* date
+* Parameters:		struct FlightNode** head, char* destination, char* date, double fare
 * Return values:	None
-* Description:		This function adds a new flight to the list of flights by
-*					creating a new FlightNode structure using newAllocNode
-*					function, updating the head pointer to point to the newly
-*					created node, and updating the next field of the previous
-*					head node to point to the newly created node.
+* Description:		This function adds a new flight to the existing linked list
+*					of flights based on its date, destination, and fare,
+*					while maintaining the sorted order.
 */
 
-void fillFlightInfo(struct FlightNode** head, char* sDestination, char* sDate, double sFlightFare)
+void fillFlightInfo(struct FlightNode** head, char* destination, char* date, double fare)
 {
-	struct FlightNode* newNode = newAllocNode(sDestination, sDate, sFlightFare);
+	struct FlightNode* newNode = newAllocNode(destination, date, fare);
 	if (!newNode)
 	{
 		printf("Error: memory allocation failed\n");
@@ -84,17 +77,17 @@ void fillFlightInfo(struct FlightNode** head, char* sDestination, char* sDate, d
 		*head = newNode;
 		return;
 	}
-
+	
 	struct FlightNode* curr = *head;
-	while (curr->next != NULL && strcmp(curr->next->date, sDate) < 0)
+	while (curr->next != NULL && strcmp(curr->next->date, date) < 0)
 	{
 		curr = curr->next;
 	}
-	while (curr->next != NULL && strcmp(curr->next->date, sDate) == 0 && strcmp(curr->next->destination, sDestination) < 0)
+	while (curr->next != NULL && strcmp(curr->next->date, date) == 0 && strcmp(curr->next->destination, destination) < 0)
 	{
 		curr = curr->next;
 	}
-	while (curr->next != NULL && strcmp(curr->next->date, sDate) == 0 && strcmp(curr->next->destination, sDestination) == 0 && curr->next->flightFare < sFlightFare)
+	while (curr->next != NULL && strcmp(curr->next->date, date) == 0 && strcmp(curr->next->destination, destination) == 0 && curr->next-> fare < fare)
 	{
 		curr = curr->next;
 	}
@@ -136,7 +129,7 @@ void printFlightInfo(struct FlightNode* head)
 
 /*
 * Function:			FlightNode newAllocNode()
-* Parameters :		char* destination, char* date
+* Parameters :		char* destination, char* date, double fare
 * Return values :	None
 * Description :		This function creates a new FlightNode structure, allocates
 *					memory for its destination and date fields, copies the values of
@@ -149,6 +142,26 @@ struct FlightNode* newAllocNode(char* destination, char* date, double fare)
 {
 	struct FlightNode* newNode = (struct FlightNode*)malloc(sizeof(struct FlightNode));
 	newNode->destination = (char*)malloc(CHAR_LENG);
+
+	if (newNode == NULL)
+	{
+		printf("Error: memory allocation failed\n");
+		return NULL;
+	}
+
+	newNode->destination = (char*)malloc(sizeof(char) * (strlen(destination) + 1));
+	if (newNode->destination != NULL)
+	{
+		strcpy(newNode->destination, destination);
+	}
+	else
+	{
+		printf("Error: memory allocation failed\n");
+		free(newNode);
+		return NULL;
+	}
+
+
 	if (newNode->destination == NULL)
 	{
 		printf("Memory allocation failed.\n");
@@ -160,6 +173,19 @@ struct FlightNode* newAllocNode(char* destination, char* date, double fare)
 	{
 		printf("Memory allocation failed.\n");
 		return 0;
+	}
+
+	newNode->date = (char*)malloc(sizeof(char) * (strlen(date) + 1));
+	if (newNode->date != NULL)
+	{
+		strcpy(newNode->date, date);
+	}
+	else
+	{
+		printf("Error: memory allocation failed\n");
+		free(newNode->destination);
+		free(newNode);
+		return NULL;
 	}
 
 	strcpy(newNode->destination, destination);
