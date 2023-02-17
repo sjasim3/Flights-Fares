@@ -46,6 +46,9 @@ void deleteNode(FlightNode* node, FlightNode** head, FlightNode** tail);
 int main()
 {	 
 
+
+
+
 	return 0;
 
 }
@@ -132,16 +135,14 @@ void printFlightInfo(struct FlightNode* head)
 * Parameters :		char* destination, char* date, double fare
 * Return values :	None
 * Description :		This function creates a new FlightNode structure, allocates
-*					memory for its destination and date fields, copies the values of
-*					destination and date into these fields, and sets the next field to
+*					memory for its destination, date. and fare fields, copies the values of
+*					destination, date and fare into these fields, and sets the next field to
 *					NULL. It returns a pointer to the newly created FlightNode structure.
-
 */
 
 struct FlightNode* newAllocNode(char* destination, char* date, double fare)
 {
 	struct FlightNode* newNode = (struct FlightNode*)malloc(sizeof(struct FlightNode));
-	newNode->destination = (char*)malloc(CHAR_LENG);
 
 	if (newNode == NULL)
 	{
@@ -161,20 +162,6 @@ struct FlightNode* newAllocNode(char* destination, char* date, double fare)
 		return NULL;
 	}
 
-
-	if (newNode->destination == NULL)
-	{
-		printf("Memory allocation failed.\n");
-		return 0;
-	}
-
-	newNode->date = (char*)malloc(CHAR_LENG);
-	if (newNode->date == NULL)
-	{
-		printf("Memory allocation failed.\n");
-		return 0;
-	}
-
 	newNode->date = (char*)malloc(sizeof(char) * (strlen(date) + 1));
 	if (newNode->date != NULL)
 	{
@@ -188,12 +175,12 @@ struct FlightNode* newAllocNode(char* destination, char* date, double fare)
 		return NULL;
 	}
 
-	strcpy(newNode->destination, destination);
-	strcpy(newNode->date, date);
+	newNode->fare = fare;
 	newNode->next = NULL;
 
 	return newNode;
 }
+
 
 
 
