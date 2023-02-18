@@ -11,16 +11,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <malloc.h>	// needed for malloc
 
-//warnings
+//Warnings
 #pragma warning(disable: 6001)
 #pragma warning(disable: 4996)
 
+
 //constants
-#define MAX_CHAR_LENG 29
-#define MIN_CHAR_LENG 1
 #define CHAR_LENG 30
+#define ERROR -1
 
 
 struct FlightNode
@@ -36,7 +35,7 @@ struct FlightNode
 
 
 //prototypes
-void fillFlightInfo(struct FlightNode** head, char* destination, char* date);
+void fillFlightInfo(struct FlightNode** head, char* destination, char* date, double fare);
 void printFlightInfo(struct FlightNode* head);
 struct FlightNode* newAllocNode(char* destination, char* date, double fare);
 struct FlightNode* findFlight(FlightNode* head, char* destination, char* date);
@@ -45,13 +44,141 @@ void deleteNode(FlightNode* node, FlightNode** head, FlightNode** tail);
 
 int main()
 {	 
+	//inicializations and declarations
+	FlightNode* head = NULL;
+	FlightNode* destHead = NULL;
+	FlightNode* tail = NULL;
+	FlightNode* destTail = NULL;
+	char* desInput = NULL;
+	char* dateInput = NULL;
+	char* fareInput = NULL;
+	int strLeng = sizeof(char) * CHAR_LENG;
+	desInput = (char*)malloc(strLeng);
+	dateInput = (char*)malloc(strLeng);
+	fareInput = (char*)malloc(strLeng);
 
+	if (desInput == NULL || dateInput == NULL || fareInput == NULL)
+	{
+		printf("Out of memory\n");
+		return ERROR;
+	}
 
+	while (1)
+	{
+		//destination input
+		fflush(stdin);
+		printf("Destination: ");
+		fgets(desInput, strLeng, stdin);
+		desInput[strcspn(desInput, "\r\n")] = 0;
+		if (strcmp(desInput, ".") == 0)
+		{
+			break;
+		}
 
+		//date input
+		fflush(stdin);
+		printf("Date: ");
+		fgets(dateInput, strLeng, stdin);
+		//Fix lines at the end when printing all information contained
+		dateInput[strcspn(dateInput, "\r\n")] = 0;
+		if (strcmp(dateInput, ".") == 0)
+		{
+			break;
+		}
+
+		//Fare Input
+		fflush(stdin);
+		printf("Fare: ");
+		fgets(fareInput, strLeng, stdin);
+		fareInput[strcspn(fareInput, "\r\n")] = 0;
+		if (strcmp(fareInput, ".") == 0)
+		{
+			break;
+		}
+		fillFlightInfo(&head, desInput, dateInput, atof(fareInput));
+		fillFlightInfo(&destHead, desInput, dateInput, atof(fareInput));
+	}
+
+	printf("\nSorted by fare:\n");
+	printFlightInfo(head);
+	printf("			");
+
+	printf("\nSorted by destination:\n");
+	printFlightInfo(destHead);
+	printf("			");
+
+	fflush(stdin);
+	printf("Destination: ");
+	fgets(desInput, strLeng, stdin);
+	desInput[strcspn(desInput, "\r\n")] = 0;
+
+	fflush(stdin);
+	printf("Date: ");
+	fgets(dateInput, strLeng, stdin);
+	dateInput[strcspn(dateInput, "\r\n")] = 0;
+
+	FlightNode* searching = findFlight(destHead, desInput, dateInput);
+	if (searching != NULL)
+	{
+		printf("Fare: %.2f\n", searching->fare);
+
+		fflush(stdin);
+		printf("New Fare: ");
+		fgets(fareInput, strLeng, stdin);
+		fareInput[strcspn(fareInput, "\r\n")] = 0;
+
+		if ((atof(fareInput) < searching->fare + 0.001) && (atof(fareInput) > searching->fare - 0.001))
+		{
+			printf("No changes");
+		}
+		else
+		{
+			searching->fare = atof(fareInput);
+			FlightNode* find = findFlight(head, desInput, dateInput);
+			if (find != NULL)
+			{
+				deleteNode(find, &head, &tail);
+			}
+			fillFlightInfo(&head, desInput, dateInput, atof(fareInput));
+		}
+	}
+	else
+	{
+		printf("Flight not found!");
+	}
+
+	printf("\nSorted by fare:\n");
+	printFlightInfo(head);
+
+	printf("\nSorted by destination:\n");
+	printFlightInfo(destHead);
+
+	free(desInput);
+	free(dateInput);
+	free(fareInput);
+
+	struct FlightNode* prev;
+	while (head != NULL)
+	{
+		free(head->destination);
+		free(head->date);
+		prev = head;
+		head = head->next;
+		free(prev);
+	}
+
+	while (destHead != NULL)
+	{
+		free(destHead->destination);
+		free(destHead->date);
+		prev = destHead;
+		destHead = destHead->next;
+		free(prev);
+	}
 
 	return 0;
-
 }
+
 
 
 
